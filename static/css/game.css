@@ -1,8 +1,11 @@
 /* Minimal styling for Morse Drill game */
+html, body { height: 100%; }
+body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
 #morse-game { margin-top: 16px; }
 #morse-game h4 { margin-bottom: 12px; }
-#target-word { font-size: 28px; font-weight: 600; margin-bottom: 8px; }
-#input-display { font-family: monospace; font-size: 18px; }
+/* scale target word responsively between small and large screens */
+#target-word { font-size: clamp(28px, 6vw, 56px); font-weight: 700; margin-bottom: 8px; }
+#input-display { font-family: monospace; font-size: 1.125rem; }
 #buttons button { min-width: 56px; margin-right: 8px; }
 #result { margin-top: 10px; font-weight: 600; }
 .win { color: green; }
@@ -18,15 +21,14 @@
 #instructions { margin-top:8px; color:#333; }
 
 /* Center game area and make instructions coherent */
-.morse-center { text-align: center; max-width: 760px; margin: 0 auto; }
-.target-label { font-size:14px; color:#666; margin-bottom:6px; }
-#target-word { font-size:36px; font-weight:700; margin:6px 0 10px; }
+.morse-center { text-align: center; max-width: 760px; margin: 0 auto; padding: 0 12px; }
+.target-label { color:#666; margin-bottom:6px; }
 .help-text { color:#444; margin: 0 auto 6px; max-width:720px; }
 .inline-instructions { display:inline-flex; align-items:center; gap:8px; margin-bottom:8px; white-space:nowrap; }
 
-/* Center the buttons and keep them on one line */
-#buttons { display:flex; justify-content:center; gap:8px; }
 .kbd-inline { display:inline-block; padding:3px 6px; background:#efefef; border-radius:4px; border:1px solid #ddd; font-family:monospace; font-weight:700; }
+.touch-friendly #buttons { display:flex; justify-content:center; gap:12px; }
+#buttons { display:flex; justify-content:center; gap:8px; }
 .instr-sep { color:#666; }
 .label-small { font-size:12px; color:#333; }
 .quick-hint { margin-top:8px; color:#555; font-size:13px; }
@@ -49,11 +51,11 @@
 .keyboard-cheatsheet .kbd-row:nth-child(4) { margin-left:44px; }
 
 @media (max-width: 1200px) {
-	.keyboard-cheatsheet { max-width:100%; }
-	.kbd-key { width:92px; height:92px; min-width:92px; }
-	.keyboard-cheatsheet .kbd-row:nth-child(2) { margin-left:6px; }
-	.keyboard-cheatsheet .kbd-row:nth-child(3) { margin-left:18px; }
-	.keyboard-cheatsheet .kbd-row:nth-child(4) { margin-left:30px; }
+ 	.keyboard-cheatsheet { max-width:100%; }
+ 	.kbd-key { width:92px; height:92px; min-width:92px; }
+ 	.keyboard-cheatsheet .kbd-row:nth-child(2) { margin-left:6px; }
+ 	.keyboard-cheatsheet .kbd-row:nth-child(3) { margin-left:18px; }
+ 	.keyboard-cheatsheet .kbd-row:nth-child(4) { margin-left:30px; }
 }
 
 /* Make number-row morse text slightly smaller and add horizontal padding
@@ -66,9 +68,42 @@
 }
 
 @media (max-width: 720px) {
-	.kbd-row { flex-wrap:wrap; }
-	.kbd-key { width:64px; height:64px; min-width:64px; margin-right:6px; }
-	.keyboard-cheatsheet .kbd-row:nth-child(2), .keyboard-cheatsheet .kbd-row:nth-child(3), .keyboard-cheatsheet .kbd-row:nth-child(4) { margin-left:0; }
+ 	/* make layout fluid on small devices: keys wrap and take percentage widths */
+ 	.kbd-row { flex-wrap:wrap; }
+ 	.kbd-key { flex: 0 0 calc(33.333% - 8px); width: auto; height: auto; min-width:0; margin-right:6px; padding:10px; box-sizing:border-box; }
+ 	.kbd-key .char { font-size:1.05rem; }
+ 	.kbd-key .morse { font-size:0.9rem; margin-top:6px; white-space:normal; }
+ 	.keyboard-cheatsheet .kbd-row:nth-child(2), .keyboard-cheatsheet .kbd-row:nth-child(3), .keyboard-cheatsheet .kbd-row:nth-child(4) { margin-left:0; }
+
+ 	/* enlarge interactive buttons and spacing for touch */
+ 	#buttons { gap:12px; }
+ 	#buttons button { min-width:64px; padding:10px 14px; font-size:1.05rem; }
+
+ 	/* increase visibility and spacing of helper text */
+ 	.inline-instructions { gap:12px; white-space:normal; }
+}
+
+/* Helper class to force touch-friendly layout when running on touch devices */
+@media (pointer: coarse) {
+  .touch-friendly #buttons button { min-width:72px; padding:12px 16px; font-size:1.1rem; }
+  .touch-friendly .kbd-key { padding:12px; }
+}
+
+/* Extra adjustments for very small mobile screens (e.g. older iPhones, small viewports) */
+@media (max-width: 420px) {
+	body { font-size: 16px; }
+	#input-display { font-size: 1.125rem; }
+	.quick-hint, .example, .target-label
+	.inline-instructions { gap:10px; }
+	.morse-dot { width: 1.05em; height: 1.05em; }
+	.morse-dash { width: 1.8em; height: 0.34em; }
+	/* make the main target very prominent on small screens */
+	#target-word { font-size: clamp(32px, 10vw, 72px); }
+	/* enlarge buttons for easier tapping */
+	#buttons button { min-width:72px; padding:10px 14px; font-size:1.05rem; }
+	/* reduce cheatsheet visual weight on small devices */
+	.keyboard-cheatsheet { opacity: 0.95; }
+	.kbd-key { font-size: 0.95rem; }
 }
 
 /* Cheatsheet toggle button next to heading */

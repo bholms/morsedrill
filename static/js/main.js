@@ -298,6 +298,11 @@ $(document).ready(function () {
 	newRound();
 	renderCheatsheetSymbols();
 
+	// detect touch-capable devices and enable touch-friendly spacing
+	if (('ontouchstart' in window) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches)) {
+		$('body').addClass('touch-friendly');
+	}
+
 	// Cheatsheet toggle behavior: show/hide and swap icon
 	$(document).on('click', '#cheatsheet-toggle', function () {
 		const $btn = $(this);

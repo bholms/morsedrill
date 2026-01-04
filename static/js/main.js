@@ -7,6 +7,14 @@ $(document).ready(function () {
 			<div class="target-label">Translate the displayed word into Morse</div>
 			<div id="target-word">—</div>
 			<div id="help-text">Type the Morse sequence for the whole word using the dot and forward slash character on your keyboard as below:</div>
+			<div class="settings" style="margin:8px 0;">
+			  <label>Difficulty: <select id="difficulty">
+			    <option value="easy">Easy</option>
+			    <option value="medium">Medium</option>
+			    <option value="hard">Hard</option>
+			  </select></label>
+			  <label style="margin-left:12px;"><input type="checkbox" id="allow-numbers"> Allow numbers</label>
+			</div>
 			<div id="instructions" class="inline-instructions">
 				<span class="kbd-inline">.</span>
 				<span class="instr-sep">&nbsp;=&nbsp;</span>
@@ -31,13 +39,24 @@ $(document).ready(function () {
 
 	$("#game-col").html(gameHtml);
 
+	// when settings change, refresh the target word immediately
+	$(document).on('change', '#difficulty', function () { newRound(); });
+	$(document).on('change', '#allow-numbers', function () { newRound(); });
+
 	const words = ["SOS","TEST","CODE","MORSE","HELP","CAT","DOG","HI","FUN"];
+
+	// expanded word pools
+	const easy = ["SOS","TEST","CODE","HELP","CAT","DOG","HI","FUN","YES","NO","OK"];
+	const medium = ["MORSE","LEARN","PYTHON","BUTTON","SCREEN","SOUND","PRACTICE","DRILL"];
+	const hard = ["EXERCISE","COMMUNICATION","DEVELOP","PERFORMANCE","APPLICATION"];
 
 	const MORSE = {
 		A: ".-", B: "-...", C: "-.-.", D: "-..", E: ".", F: "..-.", G: "--.", H: "....",
 		I: "..", J: ".---", K: "-.-", L: ".-..", M: "--", N: "-.", O: "---", P: ".--.",
 		Q: "--.-", R: ".-.", S: "...", T: "-", U: "..-", V: "...-", W: ".--", X: "-..-",
-		Y: "-.--", Z: "--.."
+		Y: "-.--", Z: "--..",
+		'0': "-----", '1': ".----", '2': "..---", '3': "...--", '4': "....-",
+		'5': ".....", '6': "-....", '7': "--...", '8': "---..", '9': "----."
 	};
 
 	let targetWord = "";
@@ -55,8 +74,47 @@ $(document).ready(function () {
 	}
 
 	function pickWord() {
-		const w = words[Math.floor(Math.random() * words.length)];
-		return w;
+		// generate using current settings
+		const difficulty = $("#difficulty").val() || 'easy';
+		const allowNumbers = $("#allow-numbers").is(':checked');
+		return generateWord({ difficulty, allowNumbers });
+	}
+
+	function randDigits(len) {
+		let s = '';
+		for (let i = 0; i < len; i++) s += Math.floor(Math.random() * 10);
+		return s;
+	}
+
+	function pickFrom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+	function generateWord(opts) {
+		const difficulty = opts && opts.difficulty || 'easy';
+		const allowNumbers = !!(opts && opts.allowNumbers);
+		const concatProb = 0.08;
+		const prependProb = allowNumbers ? 0.18 : 0;
+		const appendProb = allowNumbers ? 0.18 : 0;
+
+		let pool = easy;
+		if (difficulty === 'medium') pool = medium;
+		else if (difficulty === 'hard') pool = hard;
+
+		let word = pickFrom(pool);
+
+		if (Math.random() < concatProb) {
+			// concatenate another short word
+			word = word + pickFrom(easy);
+		}
+
+		if (Math.random() < prependProb) {
+			word = randDigits(1 + Math.floor(Math.random() * 3)) + word;
+		}
+
+		if (Math.random() < appendProb) {
+			word = word + randDigits(1 + Math.floor(Math.random() * 3));
+		}
+
+		return word.toUpperCase();
 	}
 
 	function setButtons(enabled) {

@@ -29,7 +29,7 @@ $(document).ready(function () {
 		</div>
 	`;
 
-	$(".col-md-7").html(gameHtml);
+	$("#game-col").html(gameHtml);
 
 	const words = ["SOS","TEST","CODE","MORSE","HELP","CAT","DOG","HI","FUN"];
 

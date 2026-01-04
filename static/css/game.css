@@ -33,6 +33,9 @@
 .example { margin-top:10px; font-size:13px; color:#444; }
 .example-label { font-weight:700; margin-right:6px; }
 
+/* Timer display */
+.timer-display { margin-top:8px; font-weight:600; color:#333; }
+
 /* Keyboard-style cheatsheet */
 .keyboard-cheatsheet { max-width: 880px; margin: 8px 0 24px; }
 .kbd-row { display:flex; justify-content:flex-start; margin-bottom:8px; flex-wrap:nowrap; }

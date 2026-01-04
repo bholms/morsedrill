@@ -7,14 +7,6 @@ $(document).ready(function () {
 			<div class="target-label">Translate the displayed word into Morse</div>
 			<div id="target-word">—</div>
 			<div id="help-text">Type the Morse sequence for the whole word using the dot and forward slash character on your keyboard as below:</div>
-			<div class="settings" style="margin:8px 0;">
-			  <label>Difficulty: <select id="difficulty">
-			    <option value="easy">Easy</option>
-			    <option value="medium">Medium</option>
-			    <option value="hard">Hard</option>
-			  </select></label>
-			  <label style="margin-left:12px;"><input type="checkbox" id="allow-numbers"> Allow numbers</label>
-			</div>
 			<div id="instructions" class="inline-instructions">
 				<span class="kbd-inline">.</span>
 				<span class="instr-sep">&nbsp;=&nbsp;</span>
@@ -32,8 +24,17 @@ $(document).ready(function () {
 				<button id="next-btn" class="btn btn-success">Next</button>
 			</div>
 			<div id="result"></div>
+			<div id="timer" class="timer-display"></div>
 			<div class="quick-hint">Press <strong>Enter</strong> for next word, <strong>Esc</strong> to reset.</div>
 			<div class="example"><span class="example-label">Example:</span> Letter <strong>A</strong> -> <span class="morse-text">.<span class="morse-dash" aria-hidden="true"></span></span></div>
+			<div class="settings" style="margin:8px 0;">
+			  <label>Difficulty: <select id="difficulty">
+			    <option value="easy">Easy</option>
+			    <option value="medium">Medium</option>
+			    <option value="hard">Hard</option>
+			  </select></label>
+			  <label style="margin-left:12px;"><input type="checkbox" id="allow-numbers"> Allow numbers</label>
+			</div>
 		</div>
 	`;
 
@@ -63,6 +64,11 @@ $(document).ready(function () {
 	let targetSeq = ""; // '.' and ',' (comma used for dash)
 	let userSeq = "";
 	let locked = false;
+
+	// Timer state
+	let timerStart = null;
+	let timerInterval = null;
+	let elapsedMs = 0;
 
 	function letterToSeq(letter) {
 		const code = MORSE[letter.toUpperCase()] || "";
@@ -130,6 +136,8 @@ $(document).ready(function () {
 		// show empty rendered input
 		renderUserSeq();
 		$("#result").text("").removeClass('win lose');
+		stopTimer();
+		$("#timer").text('');
 		setButtons(true);
 	}
 
@@ -139,16 +147,21 @@ $(document).ready(function () {
 		renderUserSeq();
 		$("#result").text("").removeClass('win lose');
 		setButtons(true);
+		stopTimer();
+		$("#timer").text('');
 	}
 
 	function showResult(win) {
 		locked = true;
 		setButtons(false);
+		stopTimer();
+		const timeText = formatTime(elapsedMs);
 		if (win) {
 			$("#result").text('Well done').addClass('win').removeClass('lose');
 		} else {
 			$("#result").text('Try again').addClass('lose').removeClass('win');
 		}
+		$("#timer").text('Time: ' + timeText);
 	}
 
 	function checkProgress() {
@@ -163,10 +176,39 @@ $(document).ready(function () {
 		// otherwise still in progress
 	}
 
+	// Timer helpers
+	function formatTime(ms) {
+		if (!ms) return '0.00s';
+		return (ms / 1000).toFixed(2) + 's';
+	}
+
+	function startTimer() {
+		if (timerInterval) return; // already running
+		timerStart = Date.now();
+		elapsedMs = 0;
+		$("#timer").text('Time: 0.00s');
+		timerInterval = setInterval(function () {
+			elapsedMs = Date.now() - timerStart;
+			$("#timer").text('Time: ' + formatTime(elapsedMs));
+		}, 100);
+	}
+
+	function stopTimer() {
+		if (timerInterval) {
+			clearInterval(timerInterval);
+			timerInterval = null;
+			elapsedMs = Date.now() - timerStart;
+		} else {
+			elapsedMs = timerStart ? (Date.now() - timerStart) : 0;
+		}
+		timerStart = null;
+	}
+
 	// bind buttons
 	$(document).on('click', '#dot-btn', function () {
 		if (locked) return;
 		userSeq += '.';
+		if (!timerStart) startTimer();
 		renderUserSeq();
 		checkProgress();
 	});
@@ -174,6 +216,7 @@ $(document).ready(function () {
 	$(document).on('click', '#slash-btn', function () {
 		if (locked) return;
 		userSeq += '/';
+		if (!timerStart) startTimer();
 		renderUserSeq();
 		checkProgress();
 	});
@@ -204,6 +247,7 @@ $(document).ready(function () {
 		if (e.key === '.' || e.key === '/') {
 			e.preventDefault();
 			userSeq += e.key;
+			if (!timerStart) startTimer();
 			renderUserSeq();
 			checkProgress();
 		}

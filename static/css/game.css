@@ -89,6 +89,12 @@ body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
   .touch-friendly .kbd-key { padding:12px; }
 }
 
+/* Hide keyboard-only hints (Esc / Enter) on touch devices where those keys aren't available */
+.touch-friendly .quick-hint { display: none !important; }
+@media (pointer: coarse) {
+	.quick-hint { display: none !important; }
+}
+
 /* Extra adjustments for very small mobile screens (e.g. older iPhones, small viewports) */
 @media (max-width: 420px) {
 	body { font-size: 16px; }

@@ -114,7 +114,7 @@ body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
 
 /* Cheatsheet toggle button next to heading */
 #cheatsheet-toggle { margin-left:8px; vertical-align:middle; }
-#cheatsheet-toggle .glyphicon { margin-top:0; }
+#cheatsheet-toggle .glyphicon { margin-top:0; font-size:1.5rem; vertical-align:middle; display:inline-block; }
 
 /* Remove dark focus/selection box on the toggle while keeping accessibility state via aria */
 #cheatsheet-toggle:focus, #cheatsheet-toggle:active, #cheatsheet-toggle:focus-visible {

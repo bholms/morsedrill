@@ -286,4 +286,23 @@ $(document).ready(function () {
 	// start
 	newRound();
 	renderCheatsheetSymbols();
+
+	// Cheatsheet toggle behavior: show/hide and swap icon
+	$(document).on('click', '#cheatsheet-toggle', function () {
+		const $btn = $(this);
+		const $sheet = $('#cheatsheet-bottom');
+		$sheet.slideToggle(160, function () {
+			const visible = $sheet.is(':visible');
+			const $icon = $btn.find('span.glyphicon');
+			if (visible) {
+				$icon.removeClass('glyphicon-eye-close').addClass('glyphicon-eye-open');
+				$btn.attr('title', 'Hide cheatsheet');
+				$btn.attr('aria-expanded', 'true');
+			} else {
+				$icon.removeClass('glyphicon-eye-open').addClass('glyphicon-eye-close');
+				$btn.attr('title', 'Show cheatsheet');
+				$btn.attr('aria-expanded', 'false');
+			}
+		});
+	});
 });

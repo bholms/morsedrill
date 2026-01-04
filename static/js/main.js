@@ -18,8 +18,8 @@ $(document).ready(function () {
 			</div>
 			<div id="user-seq">Input: <span id="input-display"></span></div>
 			<div id="buttons" style="margin-top:8px;">
-				<button id="dot-btn" class="btn btn-primary">.</button>
-				<button id="slash-btn" class="btn btn-primary">/</button>
+				<button id="dot-btn" class="btn btn-primary" title="dot" aria-label="dot"><span class="morse-symbol"><span class="morse-dot" aria-hidden="true"></span></span></button>
+				<button id="slash-btn" class="btn btn-primary" title="dash" aria-label="dash"><span class="morse-symbol"><span class="morse-dash" aria-hidden="true"></span></span></button>
 				<button id="reset-btn" class="btn btn-default">Reset</button>
 				<button id="next-btn" class="btn btn-success">Next</button>
 			</div>

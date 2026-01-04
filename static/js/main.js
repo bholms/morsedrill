@@ -6,7 +6,7 @@ $(document).ready(function () {
 		<div id="morse-game" class="morse-center">
 			<div class="target-label">Translate the displayed word into Morse</div>
 			<div id="target-word">—</div>
-			<div id="help-text">Type the Morse sequence for the whole word using the dot and forward slash character on your keyboard as below:</div>
+			<div id="help-text">Type the Morse sequence for the displayed word or character using the dot and forward slash character on your keyboard as below:</div>
 			<div id="instructions" class="inline-instructions">
 				<span class="kbd-inline">.</span>
 				<span class="instr-sep">&nbsp;=&nbsp;</span>
@@ -28,13 +28,14 @@ $(document).ready(function () {
 			<div class="quick-hint">Press <strong>Enter</strong> for next word, <strong>Esc</strong> to reset.</div>
 			<div class="example"><span class="example-label">Example:</span> Letter <strong>A</strong> -> <span class="morse-text">.<span class="morse-dash" aria-hidden="true"></span></span></div>
 			<div class="settings" style="margin:8px 0;">
-			  <label>Difficulty: <select id="difficulty">
-			    <option value="easy">Easy</option>
-			    <option value="medium">Medium</option>
-			    <option value="hard">Hard</option>
-			  </select></label>
-			  <label style="margin-left:12px;"><input type="checkbox" id="allow-numbers"> Allow numbers</label>
-			</div>
+		  <label>Difficulty: <select id="difficulty">
+		    <option value="basic">Basic</option>
+		    <option value="easy">Easy</option>
+		    <option value="medium">Medium</option>
+		    <option value="hard">Hard</option>
+		  </select></label>
+		  <label style="margin-left:12px;"><input type="checkbox" id="allow-numbers"> Allow numbers</label>
+		</div>
 		</div>
 	`;
 
@@ -97,6 +98,16 @@ $(document).ready(function () {
 	function generateWord(opts) {
 		const difficulty = opts && opts.difficulty || 'easy';
 		const allowNumbers = !!(opts && opts.allowNumbers);
+
+		// Basic difficulty: single character practice (letters, optionally numbers)
+		if (difficulty === 'basic') {
+			const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+			const digits = '0123456789';
+			const pool = allowNumbers ? (letters + digits) : letters;
+			const idx = Math.floor(Math.random() * pool.length);
+			return pool.charAt(idx);
+		}
+
 		const concatProb = 0.08;
 		const prependProb = allowNumbers ? 0.18 : 0;
 		const appendProb = allowNumbers ? 0.18 : 0;
